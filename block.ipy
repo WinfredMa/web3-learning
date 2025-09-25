@@ -1,0 +1,39 @@
+import hashlib
+from datetime import datetime
+
+class Block:
+    def __init__(self, data, parentNode):
+        self.data = data
+        self.parentNode = parentNode
+        self.timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        hashMethod = hashlib.sha256()
+        hashMethod.update(str(self.parentNode).encode('utf-8'))
+        hashMethod.update(str(self.data).encode('utf-8'))
+        hashMethod.update(str(self.timestamp).encode('utf-8'))
+        self.hash = hashMethod.hexdigest()
+
+class BlockChain:
+    def __init__(self):
+        self.blocks = []
+
+    def addBlock(self, block):
+        self.blocks.append(block)
+
+genesisBlock = Block("Genesis Block", "")	
+blockchain = BlockChain()
+blockchain.addBlock(genesisBlock)
+
+block2 = Block("Block 2", genesisBlock.hash)
+blockchain.addBlock(block2)	
+
+block3 = Block("Block 3", block2.hash)
+blockchain.addBlock(block3)
+
+print("blocks: %d\n" % len(blockchain.blocks))
+
+for block in blockchain.blocks:
+    print("parentNode: %s" % block.parentNode)
+    print("data: %s" % block.data)
+    print("hash: %s" % block.hash)
+    print("\n") 
